@@ -12,10 +12,12 @@
     <p class="article-content">{{ travel.content }}</p>
   </div>
 </article>
-<div class="mt-2">
-  <a href="/travels/{{ travel.id }}/edit"><button class="btn btn-primary" style="background-color: #20407b; width: 100px;">Edit Trip</button></a>
-  <button class="btn btn-primary ml-2" data-toggle="modal" data-target="#deleteModal" style="background-color: #b20c0c; width: 100px;">Delete</button>
-</div>
+{% if travel.guide == current_user %}
+  <div class="mt-2">
+    <a href="/travels/{{ travel.id }}/edit"><button class="btn btn-primary" style="background-color: #20407b; width: 100px;">Edit Trip</button></a>
+    <button class="btn btn-danger ml-2" data-toggle="modal" data-target="#deleteModal" style="background-color: #b20c0c; width: 100px;">Delete</button>
+  </div>
+{% endif %}
 <!-- Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">

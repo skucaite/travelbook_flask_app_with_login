@@ -1,11 +1,11 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 {% block content %}
-  <div class="content-section pt-4">
-  <div class="media">
-    <img class="rounded-circle account-img" src="{{ image_file }}">
-    <div class="media-body">
-      <h2 class="account-heading">{{ current_user.name }} {{ current_user.surname }}</h2>
-      <p class="text-secondary">{{ current_user.email }}</p>
+  <div class='content-section pt-4'>
+  <div class='media'>
+    <img class='rounded-circle account-img' src='{{ image_file }}'>
+    <div class='media-body'>
+      <h2 class='account-heading'>{{ current_user.name }} {{ current_user.surname }}</h2>
+      <p class='text-secondary'>{{ current_user.email }}</p>
     </div>
   </div>
     <form method='post' class='form' enctype='multipart/form-data'>
@@ -69,37 +69,39 @@
           </div>
           <div class='form-group'>
               {{ form.picture.label() }}
-              {{ form.picture(class="form-control-file") }}
+              {{ form.picture(class='form-control-file') }}
               {% if form.picture.errors %}
                   {% for error in form.picture.errors %}
-                      <span class="text-danger">{{ error }}</span></br>
+                      <span class='text-danger'>{{ error }}</span></br>
                   {% endfor %}
               {% endif %}
           </div>
       </fieldset>
-      <div class='form-group'>
-          {{ form.submit(class='btn btn-outline-info') }}
+      <div class="row">
+        <div class='form-group'>
+            {{ form.submit(class='btn btn-primary', style='background-color: #20407b;') }}
+        </div>
+        <div class='form-group'>
+            <button type="button" class='btn btn-danger ml-2' data-toggle='modal' data-target='#deleteModal' style='background-color: #b20c0c;'>Delete</button>
+        </div>
       </div>
   </form>
 </div>
 
-<div class="mt-3">
-	<button class="btn btn-primary ml-2" data-toggle="modal" data-target="#deleteModal" style="background-color: #b20c0c; width: 100px;">Delete</button>
-</div>
 <!-- Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-<div class="modal-dialog" role="document">
-	<div class="modal-content">
-		<div class="modal-header">
-			<h5 class="modal-title" id="deleteModalLabel">Delete Account?</h5>
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-				<span aria-hidden="true">&times;</span>
+<div class='modal fade' id='deleteModal' tabindex='-1' role='dialog' aria-labelledby='deleteModalLabel' aria-hidden='true'>
+<div class='modal-dialog' role='document'>
+	<div class='modal-content'>
+		<div class='modal-header'>
+			<h5 class='modal-title' id='deleteModalLabel'>Delete Account?</h5>
+			<button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+				<span aria-hidden='true'>&times;</span>
 			</button>
 		</div>
-		<div class="modal-footer">
-			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-			<form action="{{ url_for('delete_guide', guide_id=current_user.id) }}" method="POST">
-				<input class="btn btn-danger" type="submit" value="Delete">
+		<div class='modal-footer'>
+			<button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
+			<form action='{{ url_for('delete_guide', guide_id=current_user.id) }}' method='POST'>
+				<input class='btn btn-danger' type='submit' value='Delete'>
 			</form>
 		</div>
 	</div>

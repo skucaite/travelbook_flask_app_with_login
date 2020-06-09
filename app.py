@@ -191,7 +191,7 @@ def create_travel():
             return redirect('/travels')
         except:
             flash('An error occurred. Trip could not be created.', 'danger')
-    return render_template('new_travel.html', title='New Travel', form=form, legend='New Travel')
+    return render_template('travel.html', title='New Travel', form=form, legend='New Travel')
 
 # Update Travel
 # ----------------------------------------------------------------#
@@ -216,7 +216,7 @@ def edit_travel(travel_id):
         form.content.data = travel.content
     title = 'Trip ' + travel.title
 
-    return render_template('new_travel.html', form=form, travel=travel,
+    return render_template('travel.html', form=form, travel=travel,
                                 title=title, legend='Update Travel')
 
 # # Update Travel POST

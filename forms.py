@@ -63,7 +63,7 @@ class GuideForm(FlaskForm):
     picture = FileField(
         'Update Profile Picture',
         validators=[FileAllowed(['jpg', 'png'])])
-    submit = SubmitField('Update')
+    submit = SubmitField('Update Account')
 
     def validate_email(self, email):
         if email.data != current_user.email:
