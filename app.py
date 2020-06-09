@@ -93,7 +93,8 @@ def logout():
 @app.route("/account")
 @login_required
 def account():
-    return render_template('account.html', title='Account')
+    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    return render_template('account.html', title='Account', image_file=image_file)
 
 # ----------------------------------------------------------------#
 #  Guides
@@ -112,14 +113,15 @@ def guides():
 def show_guide(guide_id):
     guide = Guide.query.get_or_404(guide_id)
     travels = Travel.query.filter_by(guide_id=guide.id).all()
-    data = {
-        "id": guide.id,
-        "name": guide.name,
-        "surname": guide.surname,
-        "phone": guide.phone,
-        "email": guide.email,
-        "image_file": guide.image_file,
-    }
+    guide.image_file = url_for('static', filename='profile_pics/' + guide.image_file)
+    # data = {
+    #     "id": guide.id,
+    #     "name": guide.name,
+    #     "surname": guide.surname,
+    #     "phone": guide.phone,
+    #     "email": guide.email,
+    #     "image_file": guide.image_file,
+    # }
     title = 'Guide ' + guide.name + ' ' + guide.surname
     return render_template('show_guide.html', guide=guide, travels=travels, title=title)
 

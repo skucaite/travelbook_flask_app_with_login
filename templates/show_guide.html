@@ -1,34 +1,24 @@
 {% extends 'layout.html' %}
 {% block content %}
-<div>
-	<h1 class="monospace">
-		{{ guide.name }} {{ guide.surname }}
-	</h1>
-  <div class="mt-4 mb-4">
-  	<img style="width: 100px;" src="{{ guide.image_file }}" alt="Guide Image" />
-  </div>
-	<p class="subtitle">
-		ID: {{ guide.id }}
-	</p>
-	<p>
-		<i class="subtitle"></i> {% if guide.phone %} Phone: {{ guide.phone }}{% else %}No Phone{% endif %}
-  </p>
-  <p>
-    <i class="fas fa-phone-alt"></i> {% if guide.email %} Email: {{ guide.email }}{% else %}No email{% endif %}
-  </p>
-</div>
-<section>
-	<h2 class="monospace">{% if travels %} Available Trips: {% else %} No Available Trips {% endif %} </h2>
-		<div class="">
-			{%for travel in travels %}
-				<div class="col-sm-4">
-					<div class="tile tile-post">
-						<h5><a href="/travels/{{ travel.id }}">{{ travel.title }}</a></h5>
-					</div>
-				</div>
-			{% endfor %}
+<div class="content-section pt-4">
+	<div class="media">
+		<img class="rounded-circle account-img" src="{{ guide.image_file }}" alt="Guide Image">
+		<div class="media-body">
+			<h2 class="account-heading">{{ guide.name }} {{ guide.surname }}</h2>
+			<p class="text-secondary form-group">
+				<strong>ID: </strong>{{ guide.id }}<br>
+				{% if guide.phone %}<strong> Phone: </strong>{{ guide.phone }}{% else %}No Phone{% endif %}  <br>
+    		{% if guide.email %}<strong> Email: </strong>{{ guide.email }}{% else %}No email{% endif %}
+  		</p>
+		</div>
 	</div>
-</section>
+</div>
+<div class="content-section">
+	<h2 class="monospace">{% if travels %} Available Trips: {% else %} No Available Trips {% endif %} </h2>
+		{%for travel in travels %}
+			<h5><a href="/travels/{{ travel.id }}">{{ travel.title }}</a></h5>
+		{% endfor %}
+</div>
 <div class="mt-3">
   <a href="/guides/{{ guide.id }}/edit"><button class="btn btn-primary" style="background-color: #20407b; width: 100px;">Edit Guide</button></a>
 	<button class="btn btn-primary ml-2" data-toggle="modal" data-target="#deleteModal" style="background-color: #b20c0c; width: 100px;">Delete</button>
