@@ -152,47 +152,8 @@ def show_guide(guide_id):
     guide = Guide.query.get_or_404(guide_id)
     travels = Travel.query.filter_by(guide_id=guide.id).all()
     guide.image_file = url_for('static', filename='profile_pics/' + guide.image_file)
-    # data = {
-    #     "id": guide.id,
-    #     "name": guide.name,
-    #     "surname": guide.surname,
-    #     "phone": guide.phone,
-    #     "email": guide.email,
-    #     "image_file": guide.image_file,
-    # }
     title = 'Guide ' + guide.name + ' ' + guide.surname
     return render_template('show_guide.html', guide=guide, travels=travels, title=title)
-
-# Update Guide GET
-# ----------------------------------------------------------------#
-@app.route('/guides/<guide_id>/edit', methods=['GET'])
-def edit_guide_form(guide_id):
-    guide=Guide.query.get_or_404(guide_id)
-    form = GuideForm()
-    form.name.data = guide.name
-    form.surname.data = guide.surname
-    form.phone.data = guide.phone
-    form.email.data = guide.email
-
-    title = 'Guide ' + guide.name + ' ' + guide.surname
-
-    return render_template('edit_guide.html', form=form, guide=guide, title=title)
-
-# Update Guide Travel
-# ----------------------------------------------------------------#
-@app.route('/guides/<guide_id>/edit', methods=['POST'])
-def edit_guide(guide_id):
-    guide=Guide.query.get_or_404(guide_id)
-    form = GuideForm()
-    guide.name = form.name.data
-    guide.surname = form.surname.data
-    guide.phone = form.phone.data
-    guide.email = form.email.data
-    guide.update()
-
-    title = 'Guide ' + guide.name + ' ' + guide.surname
-
-    return render_template('show_guide.html', form=form, guide=guide, title=title)
 
 # Delete Guide
 # ----------------------------------------------------------------#
@@ -225,21 +186,26 @@ def show_travel(travel_id):
 
 # Create Travel
 # ----------------------------------------------------------------#
-@app.route('/travels/create', methods=['GET'])
-def create_travel_form():
-    form = TravelForm()
-    return render_template('new_travel.html', form=form)
+# @app.route('/travels/create', methods=['GET'])
+# def create_travel_form():
+#     form = TravelForm()
+#     return render_template('new_travel.html', title='New Travel', form=form)
 
-@app.route('/travels/create', methods=['POST'])
+@app.route('/travels/create', methods=['GET', 'POST'])
+# @login_required
 def create_travel():
-    try:
-        form = TravelForm()
-        travel = Travel(title = form.title.data, content = form.content.data, guide_id = form.guide_id.data)
-        travel.insert()
-        flash('Trip ' + form.title.data  + ' was successfully created!', 'success')
-    except:
-        flash('An error occurred. Trip could not be created.', 'danger')
-    return render_template('show_travel.html', form=form, travel=travel)
+    form = TravelForm()
+    if form.validate_on_submit():
+        travel = Travel(title = form.title.data,
+                        content = form.content.data,
+                        guide_id = form.guide_id.data)
+        try:
+            travel.insert()
+            flash('Trip ' + form.title.data  + ' was successfully created!', 'success')
+            return redirect('/travels')
+        except:
+            flash('An error occurred. Trip could not be created.', 'danger')
+    return render_template('new_travel.html', title='New Travel', form=form)
 
 # Update Travel GET
 # ----------------------------------------------------------------#

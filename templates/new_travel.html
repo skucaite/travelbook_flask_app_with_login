@@ -2,22 +2,56 @@
 {% block content %}
   <div class="content-section">
     <form method="post" class="form">
-      <h3 class="form-heading">Create New Trip</h3>
-      <div class="form-group">
-        <label for="title">Title</label>
-        {{ form.title(class = 'form-control', autofocus = true) }}
-      </div>
+      {{ form.hidden_tag() }}
+      <fieldset class='form-group'>
+        <legend class='border-bottom mb-4'>Create New Travel</legend>
 
-      <div class="form-group">
-        <label for="content">Content</label>
-        {{ form.content(class = 'form-control', autofocus = true) }}
-      </div>
-
-      <div class="form-group">
-          <label for="guide_id">Guide id</label>
-          {{ form.guide_id(class = 'form-control', autofocus = true) }}
+        <div class="form-group">
+          {{ form.title.label(class='form-control-label') }}
+          {% if form.title.errors %}
+              {{ form.title(class='form-control form-control-lg is-invalid') }}
+              <div class='invalid-feedback'>
+                  {% for error in form.title.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.title(class='form-control form-control-lg') }}
+          {% endif %}
         </div>
-      <input type="submit" value="Create Trip" class="btn btn-primary" style="background-color: #20407b;">
+
+        <div class="form-group">
+          {{ form.content.label(class='form-control-label') }}
+          {% if form.content.errors %}
+              {{ form.content(class='form-control form-control-lg is-invalid') }}
+              <div class='invalid-feedback'>
+                  {% for error in form.content.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.content(class='form-control form-control-lg') }}
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          {{ form.guide_id.label(class='form-control-label') }}
+          {% if form.guide_id.errors %}
+              {{ form.guide_id(class='form-control form-control-lg is-invalid') }}
+              <div class='invalid-feedback'>
+                  {% for error in form.guide_id.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.guide_id(class='form-control form-control-lg') }}
+          {% endif %}
+        </div>
+      </fieldset>
+
+      <div class='form-group'>
+          {{ form.submit(class='btn btn-outline-info') }}
+      </div>
     </form>
   </div>
 {% endblock content %}
