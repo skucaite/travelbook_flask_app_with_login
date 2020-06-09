@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+
+  {% for travel in travels.items %}
+    <article class="media content-section">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="/guides/{{ travel.guide_id }}">{{ travel.guide.name }} {{ travel.guide.surname }}</a>
+        </div>
+        <h2><a class="article-title" href="/travels/{{ travel.id }}">{{ travel.title }}</a></h2>
+        <p class="article-content">{{ travel.content }}</p>
+      </div>
+    </article>
+  {% endfor %}
+  <div class="mt-4">
+  	<a href="/travels/create"><button class="btn btn-primary" style="background-color: #20407b;">Create New Trip</button></a>
+  </div>
+
+  {% for page_num in travels.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+    {% if page_num %}
+      {% if travels.page == page_num %}
+        <a class="btn btn-info mb-4" href="{{ url_for('travels', page=page_num) }}">{{ page_num }}</a>
+      {% else %}
+        <a class="btn btn-outline-info mb-4" href="{{ url_for('travels', page=page_num) }}">{{ page_num }}</a>
+      {% endif %}
+    {% else %}
+      ...
+    {% endif %}
+  {% endfor %}
+
+{% endblock content %}

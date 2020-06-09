@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="content-section">
+    <form method="post" class="form">
+      <h3 class="form-heading">Create New Guide</h3>
+      <div class="form-group">
+        <label for="name">Name</label>
+        {{ form.name(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="surname">Surname</label>
+        {{ form.surname(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+          <label for="phone">Phone</label>
+          {{ form.phone(class = 'form-control', placeholder='+370', autofocus = true) }}
+        </div>
+      <div class="form-group">
+          <label for="email">Email</label>
+          {{ form.email(class = 'form-control', autofocus = true) }}
+        </div>
+      <input type="submit" value="Create Guide" class="btn btn-primary" style="background-color: #20407b;">
+    </form>
+  </div>
+{% endblock content %}

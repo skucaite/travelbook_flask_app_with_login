@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="content-section">
+    <form method="post" class="form" action="/travels/{{ travel.id }}/edit">
+      <h3 class="form-heading">Edit Trip <strong>{{ travel.title }}</strong></h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        {{ form.title(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="content">Content</label>
+        {{ form.content(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+          <label for="guide_id">Guide ID</label>
+          {{ form.guide_id(class = 'form-control', autofocus = true) }}
+        </div>
+      <input type="submit" value="Update" class="btn btn-primary" style="background-color: #20407b;">
+    </form>
+  </div>
+{% endblock content %}

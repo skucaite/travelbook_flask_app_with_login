@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block content %}
+  <div class="content-section">
+    <form method="post" class="form">
+      <h3 class="form-heading">Create New Trip</h3>
+      <div class="form-group">
+        <label for="title">Title</label>
+        {{ form.title(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+        <label for="content">Content</label>
+        {{ form.content(class = 'form-control', autofocus = true) }}
+      </div>
+
+      <div class="form-group">
+          <label for="guide_id">Guide id</label>
+          {{ form.guide_id(class = 'form-control', autofocus = true) }}
+        </div>
+      <input type="submit" value="Create Trip" class="btn btn-primary" style="background-color: #20407b;">
+    </form>
+  </div>
+{% endblock content %}
