@@ -74,11 +74,12 @@ class GuideForm(FlaskForm):
 
 class TravelForm(FlaskForm):
     guide_id = StringField(
-        'guide_id',
+        'Guide ID',
         validators=[DataRequired()])
     title = StringField(
-        'title',
+        'Title',
         validators=[DataRequired()])
     content = TextAreaField(
-        'content',
+        'Content',
         validators=[DataRequired()])
+    submit = SubmitField('Create')
