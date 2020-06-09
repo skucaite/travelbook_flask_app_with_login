@@ -73,9 +73,6 @@ class GuideForm(FlaskForm):
 
 
 class TravelForm(FlaskForm):
-    guide_id = StringField(
-        'Guide ID',
-        validators=[DataRequired()])
     title = StringField(
         'Title',
         validators=[DataRequired()])

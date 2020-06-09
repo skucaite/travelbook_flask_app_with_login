@@ -12,9 +12,6 @@
       </div>
     </article>
   {% endfor %}
-  <div class="mt-4">
-  	<a href="/travels/create"><button class="btn btn-primary" style="background-color: #20407b;">Create New Trip</button></a>
-  </div>
 
   {% for page_num in travels.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
     {% if page_num %}

@@ -186,19 +186,14 @@ def show_travel(travel_id):
 
 # Create Travel
 # ----------------------------------------------------------------#
-# @app.route('/travels/create', methods=['GET'])
-# def create_travel_form():
-#     form = TravelForm()
-#     return render_template('new_travel.html', title='New Travel', form=form)
-
 @app.route('/travels/create', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def create_travel():
     form = TravelForm()
     if form.validate_on_submit():
         travel = Travel(title = form.title.data,
                         content = form.content.data,
-                        guide_id = form.guide_id.data)
+                        guide = current_user)
         try:
             travel.insert()
             flash('Trip ' + form.title.data  + ' was successfully created!', 'success')

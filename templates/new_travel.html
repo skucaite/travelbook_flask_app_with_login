@@ -34,19 +34,6 @@
           {% endif %}
         </div>
 
-        <div class="form-group">
-          {{ form.guide_id.label(class='form-control-label') }}
-          {% if form.guide_id.errors %}
-              {{ form.guide_id(class='form-control form-control-lg is-invalid') }}
-              <div class='invalid-feedback'>
-                  {% for error in form.guide_id.errors %}
-                      <span>{{ error }}</span>
-                  {% endfor %}
-              </div>
-          {% else %}
-              {{ form.guide_id(class='form-control form-control-lg') }}
-          {% endif %}
-        </div>
       </fieldset>
 
       <div class='form-group'>
