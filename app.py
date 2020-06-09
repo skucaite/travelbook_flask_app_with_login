@@ -5,6 +5,7 @@ from flask import Flask, render_template, url_for, flash, request, redirect, abo
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+from flask_login import login_user, current_user, logout_user, login_required
 
 # from functools import wraps
 # import json
@@ -29,7 +30,7 @@ CORS(app)
 def home():
     try:
         page = request.args.get('page', 1, type=int)
-        travels=Travel.query.paginate(page=page, per_page=3)
+        travels=Travel.query.order_by(Travel.id.desc()).paginate(page=page, per_page=3)
     except Exception:
         abort(404)
     return render_template('home.html', travels=travels)
@@ -47,6 +48,8 @@ def about():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -66,14 +69,25 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    form = LoginForm()
-    try:
-        flash('You have been logged in!', 'success')
+    if current_user.is_authenticated:
         return redirect(url_for('home'))
-    except Exception:
-        flash('Login Unsuccessful. Please check username and password', 'danger')
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = Guide.query.filter_by(email=form.email.data).first()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_page = request.args.get('next')
+            flash('You have been logged in!', 'success')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
 
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 # ----------------------------------------------------------------#
 #  Guides
@@ -152,7 +166,7 @@ def delete_guide(guide_id):
 @app.route('/travels')
 def travels():
     page = request.args.get('page', 1, type=int)
-    travels=Travel.query.paginate(page=page, per_page=3)
+    travels=Travel.query.order_by(Travel.id.desc()).paginate(page=page, per_page=3)
     return render_template('travels.html', travels=travels)
 
 # Show Travel
