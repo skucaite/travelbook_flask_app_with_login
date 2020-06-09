@@ -22,7 +22,8 @@ def setup_db(app):
     db.app = app
     db.init_app(app)
     bcrypt.app = Bcrypt(app)
-    login_manager.app = app
+    login_manager.app = LoginManager(app)
+    login_manager.init_app(app)
     login_manager.login_view = 'login'
     login_manager.login_message_category = 'info'
 
@@ -32,7 +33,7 @@ def db_drop_and_create_all():
 
 
 @login_manager.user_loader
-def load_guide(guide_id):
+def load_user(guide_id):
     return Guide.query.get(int(guide_id))
 
 # Models
