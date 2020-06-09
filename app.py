@@ -29,6 +29,7 @@ CORS(app)
 # ----------------------------------------------------------------#
 @app.route('/')
 @app.route('/home')
+@app.route('/travels')
 def home():
     try:
         page = request.args.get('page', 1, type=int)
