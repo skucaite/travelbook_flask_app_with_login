@@ -103,6 +103,8 @@ def account():
 def guides():
     try:
         guides=Guide.query.all()
+        for guide in guides:
+            guide.image_file = url_for('static', filename='profile_pics/' + guide.image_file)
     except Exception:
         abort(404)
     return render_template('guides.html', guides=guides, title='Guides')

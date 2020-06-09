@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: 48579570fe05
-Revises: 
+Revises:
 Create Date: 2020-06-09 12:11:16.847032
 
 """
@@ -24,7 +24,7 @@ def upgrade():
     sa.Column('surname', sa.String(length=20), nullable=False),
     sa.Column('phone', sa.String(length=20), nullable=False),
     sa.Column('email', sa.String(length=120), nullable=False),
-    sa.Column('image_file', sa.String(length=120), nullable=False),
+    sa.Column('image_file', sa.String(length=120), nullable=False, default='default.jpg'),
     sa.Column('password', sa.String(length=60), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')

@@ -43,7 +43,7 @@ class Guide(db.Model, UserMixin):
     surname = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    image_file = db.Column(db.String(120), nullable=False, default='https://cdn.pixabay.com/photo/2016/02/17/16/32/person-1205346_960_720.png')
+    image_file = db.Column(db.String(120), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     travels = db.relationship('Travel', backref='guide', lazy=True)
 
