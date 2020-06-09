@@ -39,23 +39,29 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
+# @app.route('/register', methods=['GET'])
+# def register_from():
+#     form = RegistrationForm()
+#     return render_template('register.html', title='Register', form=form)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
-    try:
+    if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         guide = Guide(name = form.name.data,
                     surname = form.surname.data,
                     phone = form.phone.data,
                     email = form.email.data,
                     password = hashed_password)
-        guide.insert()
-        flash('Guide' + form.name.data + ' ' + form.surname.data + ' was successfully created!', 'success')
-        return redirect(url_for('login'))
-    except Exception:
-        flash('An error occurred. Guide could not be created.', 'danger')
-    return render_template('register.html', title='Register', guide=guide, form=form)
+        try:
+            guide.insert()
+            flash('Guide' + form.name.data + ' ' + form.surname.data + ' was successfully created!', 'success')
+            return redirect(url_for('login'))
+        except Exception:
+            flash('An error occurred. Guide could not be created.', 'danger')
+    return render_template('register.html', title='Register', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
