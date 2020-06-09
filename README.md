@@ -1,4 +1,4 @@
-# Full Stack Nanodegree Final Project
+# Flask App Project with user login options
 
 ## Background
 
