@@ -1,12 +1,17 @@
 import os
 from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
-import json
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_login import UserMixin
 
 database_name = "travelbook_login"
 database_path = 'postgresql://postgres@localhost:5432/travelbook_login'
 
 db = SQLAlchemy()
+login_manager = LoginManager()
+bcrypt = Bcrypt()
+
 
 SECRET_KEY = os.urandom(32)
 
@@ -16,20 +21,29 @@ def setup_db(app):
     app.config['SECRET_KEY'] = SECRET_KEY
     db.app = app
     db.init_app(app)
+    bcrypt.app = Bcrypt(app)
+    login_manager.app = app
+    login_manager.login_view = 'login'
+    login_manager.login_message_category = 'info'
 
 def db_drop_and_create_all():
     db.drop_all()
     db.create_all()
 
 
+@login_manager.user_loader
+def load_guide(guide_id):
+    return Guide.query.get(int(guide_id))
+
 # Models
-class Guide(db.Model):
+class Guide(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
     surname = db.Column(db.String(20), nullable=False)
     phone = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(120), nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
     image_file = db.Column(db.String(120), nullable=False, default='https://cdn.pixabay.com/photo/2016/02/17/16/32/person-1205346_960_720.png')
+    password = db.Column(db.String(60), nullable=False)
     travels = db.relationship('Travel', backref='guide', lazy=True)
 
     def __repr__(self):
