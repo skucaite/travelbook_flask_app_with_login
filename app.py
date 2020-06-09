@@ -6,14 +6,14 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 
-from functools import wraps
-import json
-from os import environ as env
-from werkzeug.exceptions import HTTPException
+# from functools import wraps
+# import json
+# from os import environ as env
+# from werkzeug.exceptions import HTTPException
 
 
-from .forms import TravelForm, GuideForm, Registration, LoginForm
-from .models import setup_db, Guide, Travel, db, db_drop_and_create_all
+from .forms import TravelForm, GuideForm, RegistrationForm, LoginForm
+from .models import setup_db, Guide, Travel, db, db_drop_and_create_all, bcrypt
 
 
 app = Flask(__name__)
@@ -42,17 +42,31 @@ def about():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = GuideForm()
-    if form.validate_on_submit():
-        flash(f'Account created for guide {form.name.data} {form.surname.data}!', 'success')
-        return redirect(url_for('home'))
-    return render_template('register.html', title='Register', form=form)
+    form = RegistrationForm()
+    try:
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        guide = Guide(name = form.name.data,
+                    surname = form.surname.data,
+                    phone = form.phone.data,
+                    email = form.email.data,
+                    password = hashed_password)
+        guide.insert()
+        flash('Guide' + form.name.data + ' ' + form.surname.data + ' was successfully created!', 'success')
+        return redirect(url_for('login'))
+    except Exception:
+        flash('An error occurred. Guide could not be created.', 'danger')
+    return render_template('register.html', title='Register', guide=guide, form=form)
 
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html', title='Login')
-
+    form = LoginForm()
+    try:
+        flash('You have been logged in!', 'success')
+        return redirect(url_for('home'))
+    except Exception:
+        flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
 
 
 # ----------------------------------------------------------------#
@@ -82,24 +96,6 @@ def show_guide(guide_id):
     }
     title = 'Guide ' + guide.name + ' ' + guide.surname
     return render_template('show_guide.html', guide=guide, travels=travels, title=title)
-
-# Create Guide
-# ----------------------------------------------------------------#
-@app.route('/guides/create', methods=['GET'])
-def create_guide_form():
-    form = GuideForm()
-    return render_template('new_guide.html', form=form)
-
-@app.route('/guides/create', methods=['POST'])
-def create_guide():
-    try:
-        form = GuideForm()
-        guide = Guide(name = form.name.data, surname = form.surname.data, phone = form.phone.data, email = form.email.data)
-        guide.insert()
-        flash('Guide ' + form.name.data + ' ' + form.surname.data  + ' was successfully created!', 'success')
-    except:
-        flash('An error occurred. Guide could not be created.', 'danger')
-    return render_template('show_guide.html', form=form, guide=guide)
 
 # Update Guide GET
 # ----------------------------------------------------------------#
