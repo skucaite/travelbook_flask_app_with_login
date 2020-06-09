@@ -42,11 +42,6 @@ def home():
 def about():
     return render_template('about.html', title='About')
 
-# @app.route('/register', methods=['GET'])
-# def register_from():
-#     form = RegistrationForm()
-#     return render_template('register.html', title='Register', form=form)
-
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -170,11 +165,6 @@ def delete_guide(guide_id):
 # ----------------------------------------------------------------#
 #  Travels
 # ----------------------------------------------------------------#
-@app.route('/travels')
-def travels():
-    page = request.args.get('page', 1, type=int)
-    travels=Travel.query.order_by(Travel.id.desc()).paginate(page=page, per_page=3)
-    return render_template('travels.html', travels=travels)
 
 # Show Travel
 # ----------------------------------------------------------------#
