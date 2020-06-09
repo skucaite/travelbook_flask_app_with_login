@@ -2,6 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, DateField, TextAreaField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
+from .models import Guide
+
 
 class RegistrationForm(FlaskForm):
     name = StringField(
@@ -23,6 +25,11 @@ class RegistrationForm(FlaskForm):
         'Confirm Password',
         validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+    def validate_email(self, email):
+        user = Guide.query.filter_by(email=email.data).first()
+        if user:
+            raise ValidationError('That email is taken. Please choose a different one.')
 
 
 class LoginForm(FlaskForm):
