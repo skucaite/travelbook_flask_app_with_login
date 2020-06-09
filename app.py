@@ -191,36 +191,48 @@ def create_travel():
             return redirect('/travels')
         except:
             flash('An error occurred. Trip could not be created.', 'danger')
-    return render_template('new_travel.html', title='New Travel', form=form)
+    return render_template('new_travel.html', title='New Travel', form=form, legend='New Travel')
 
-# Update Travel GET
+# Update Travel
 # ----------------------------------------------------------------#
-@app.route('/travels/<travel_id>/edit', methods=['GET'])
-def edit_travel_form(travel_id):
-    travel=Travel.query.get_or_404(travel_id)
-    form = TravelForm()
-    form.title.data = travel.title
-    form.content.data = travel.content
-    form.guide_id.data = travel.guide_id
-
-    title = 'Trip ' + travel.title
-
-    return render_template('edit_travel.html', form=form, travel=travel, title=title)
-
-# Update Travel POST
-# ----------------------------------------------------------------#
-@app.route('/travels/<travel_id>/edit', methods=['POST'])
+@app.route('/travels/<travel_id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_travel(travel_id):
     travel=Travel.query.get_or_404(travel_id)
+    if travel.guide != current_user:
+        abort(403)
     form = TravelForm()
-    travel.title = form.title.data
-    travel.content = form.content.data
-    travel.guide_id = form.guide_id.data
-    travel.update()
-
+    if form.validate_on_submit():
+        travel.title = form.title.data
+        travel.content = form.content.data
+        try:
+            travel.update()
+            flash('Your travel has been updated!', 'success')
+            return redirect(url_for('show_travel', travel_id=travel.id))
+        except:
+            flash('An error occurred. Trip could not be updated.', 'danger')
+    elif request.method == 'GET':
+        form.title.data = travel.title
+        form.content.data = travel.content
     title = 'Trip ' + travel.title
 
-    return render_template('show_travel.html', travel=travel, form=form, title=title)
+    return render_template('new_travel.html', form=form, travel=travel,
+                                title=title, legend='Update Travel')
+
+# # Update Travel POST
+# # ----------------------------------------------------------------#
+# @app.route('/travels/<travel_id>/edit', methods=['POST'])
+# def edit_travel(travel_id):
+#     travel=Travel.query.get_or_404(travel_id)
+#     form = TravelForm()
+#     travel.title = form.title.data
+#     travel.content = form.content.data
+#     travel.guide_id = form.guide_id.data
+#     travel.update()
+#
+#     title = 'Trip ' + travel.title
+#
+#     return render_template('show_travel.html', travel=travel, form=form, title=title)
 
 # Delete Travel
 # ----------------------------------------------------------------#

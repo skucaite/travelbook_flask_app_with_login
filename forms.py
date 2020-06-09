@@ -79,4 +79,4 @@ class TravelForm(FlaskForm):
     content = TextAreaField(
         'Content',
         validators=[DataRequired()])
-    submit = SubmitField('Create')
+    submit = SubmitField('Submit')
