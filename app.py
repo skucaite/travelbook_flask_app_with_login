@@ -239,7 +239,6 @@ def delete_travel(travel_id):
 def guide_travels():
     page = request.args.get('page', 1, type=int)
     guide = current_user
-    # guide = Guide.query.filter_by(id=guide_id).first_or_404()
     travels = Travel.query.filter_by(guide=guide)\
         .order_by(Travel.id.desc())\
         .paginate(page=page, per_page=3)
