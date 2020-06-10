@@ -15,7 +15,8 @@ from flask_login import login_user, current_user, logout_user, login_required
 # from werkzeug.exceptions import HTTPException
 
 
-from .forms import TravelForm, GuideForm, RegistrationForm, LoginForm
+from .forms import (TravelForm, GuideForm, RegistrationForm, LoginForm,
+                    RequestResetForm, ResetPasswordForm)
 from .models import setup_db, Guide, Travel, db, db_drop_and_create_all, bcrypt
 
 
@@ -219,21 +220,6 @@ def edit_travel(travel_id):
     return render_template('travel.html', form=form, travel=travel,
                                 title=title, legend='Update Travel')
 
-# # Update Travel POST
-# # ----------------------------------------------------------------#
-# @app.route('/travels/<travel_id>/edit', methods=['POST'])
-# def edit_travel(travel_id):
-#     travel=Travel.query.get_or_404(travel_id)
-#     form = TravelForm()
-#     travel.title = form.title.data
-#     travel.content = form.content.data
-#     travel.guide_id = form.guide_id.data
-#     travel.update()
-#
-#     title = 'Trip ' + travel.title
-#
-#     return render_template('show_travel.html', travel=travel, form=form, title=title)
-
 # Delete Travel
 # ----------------------------------------------------------------#
 @app.route('/travels/<travel_id>/delete', methods=['POST', 'DELETE'])
@@ -246,6 +232,18 @@ def delete_travel(travel_id):
         flash('There was a problem deleting that guide', 'danger')
     return redirect('/travels')
 
+#vOnly Guides travels
+# ----------------------------------------------------------------#
+@app.route("/my_travels")
+@login_required
+def guide_travels():
+    page = request.args.get('page', 1, type=int)
+    guide = current_user
+    # guide = Guide.query.filter_by(id=guide_id).first_or_404()
+    travels = Travel.query.filter_by(guide=guide)\
+        .order_by(Travel.id.desc())\
+        .paginate(page=page, per_page=3)
+    return render_template('guide_travels.html', travels=travels, guide=guide)
 
 if __name__ == '__main__':
     app.run()
