@@ -4,7 +4,7 @@
     {% for travel in travels.items %}
         <article class="media content-section">
           <div class="media-body">
-            <h2><p class="article-title">{{ travel.title }}</p></h2>
+            <h2><a href="/travels/{{ travel.id }}" class="article-title">{{ travel.title }}</a></h2>
             <p class="article-content">{{ travel.content }}</p>
           </div>
         </article>

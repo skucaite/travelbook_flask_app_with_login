@@ -1,42 +1,13 @@
-import os
-from sqlalchemy import Column, String, Integer
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from flask_login import LoginManager
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from travelbook import db, login_manager, app
 from flask_login import UserMixin
-
-database_name = "travelbook_login"
-database_path = 'postgresql://postgres@localhost:5432/travelbook_login'
-
-db = SQLAlchemy()
-login_manager = LoginManager()
-bcrypt = Bcrypt()
-
-
-SECRET_KEY = os.urandom(32)
-
-def setup_db(app):
-    app.config['SQLALCHEMY_DATABASE_URI'] = database_path
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SECRET_KEY'] = SECRET_KEY
-    db.app = app
-    db.init_app(app)
-    bcrypt.app = Bcrypt(app)
-    login_manager.app = LoginManager(app)
-    login_manager.init_app(app)
-    login_manager.login_view = 'login'
-    login_manager.login_message_category = 'info'
-
-def db_drop_and_create_all():
-    db.drop_all()
-    db.create_all()
 
 
 @login_manager.user_loader
 def load_user(guide_id):
     return Guide.query.get(int(guide_id))
 
-# Models
+
 class Guide(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20), nullable=False)
@@ -60,6 +31,19 @@ class Guide(db.Model, UserMixin):
     def delete(self):
         db.session.delete(self)
         db.session.commit()
+
+    def get_reset_token(self, expires_sec=1800):
+        s = Serializer(app.config['SECRET_KEY'], expires_sec)
+        return s.dumps({'user_id': self.id}).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = Serializer(app.config['SECRET_KEY'])
+        try:
+            user_id = s.loads(token)['user_id']
+        except:
+            return None
+        return User.query.get(user_id)
 
 
 class Travel(db.Model):
