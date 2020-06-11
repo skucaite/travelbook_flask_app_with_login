@@ -1,5 +1,4 @@
-from flask import Blueprint
-from flask import render_template, request, abort
+from flask import render_template, request, abort, Blueprint
 from travelbook.models import Guide
 
 

@@ -1,12 +1,10 @@
 from flask import render_template, url_for, flash, redirect, request, abort, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from flaskblog import db, bcrypt
-from flaskblog.models import User, Post
-from flaskblog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,
-                                   RequestResetForm, ResetPasswordForm)
-from flaskblog.users.utils import save_picture, send_reset_email
-
-
+from travelbook import db, bcrypt
+from travelbook.models import Guide, Travel
+from travelbook.travels.forms import (GuideForm, RegistrationForm, LoginForm,
+                    RequestResetForm, ResetPasswordForm)
+from travelbook.travels.utils import save_picture, send_reset_email
 
 
 guides = Blueprint('guides', __name__)
