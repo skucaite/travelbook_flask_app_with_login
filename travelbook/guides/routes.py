@@ -2,9 +2,9 @@ from flask import render_template, url_for, flash, redirect, request, abort, Blu
 from flask_login import login_user, current_user, logout_user, login_required
 from travelbook import db, bcrypt
 from travelbook.models import Guide, Travel
-from travelbook.travels.forms import (GuideForm, RegistrationForm, LoginForm,
-                    RequestResetForm, ResetPasswordForm)
-from travelbook.travels.utils import save_picture, send_reset_email
+from travelbook.guides.forms import (GuideForm, RegistrationForm, LoginForm,
+                                        RequestResetForm, ResetPasswordForm)
+from travelbook.guides.utils import save_picture, send_reset_email
 
 
 guides = Blueprint('guides', __name__)
@@ -13,7 +13,7 @@ guides = Blueprint('guides', __name__)
 @guides.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -25,7 +25,7 @@ def register():
         try:
             guide.insert()
             flash('Guide' + form.name.data + ' ' + form.surname.data + ' was successfully created!', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('guides.login'))
         except Exception:
             flash('An error occurred. Guide could not be created.', 'danger')
     return render_template('register.html', title='Register', form=form)
@@ -34,7 +34,7 @@ def register():
 @guides.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     form = LoginForm()
     if form.validate_on_submit():
         user = Guide.query.filter_by(email=form.email.data).first()
@@ -42,7 +42,7 @@ def login():
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
             flash('You have been logged in!', 'success')
-            return redirect(next_page) if next_page else redirect(url_for('home'))
+            return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -51,7 +51,7 @@ def login():
 @guides.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for('home'))
+    return redirect(url_for('main.home'))
 
 
 @guides.route("/account", methods=['GET', 'POST'])
@@ -68,7 +68,7 @@ def account():
         current_user.email = form.email.data
         current_user.update()
         flash('Your account has been updated!', 'success')
-        return redirect(url_for('account'))
+        return redirect(url_for('guides.account'))
     elif request.method == 'GET':
         form.name.data = current_user.name
         form.surname.data = current_user.surname
@@ -80,7 +80,7 @@ def account():
 #  All Guides
 # ----------------------------------------------------------------#
 @guides.route('/guides')
-def guides():
+def all_guides():
     try:
         guides=Guide.query.all()
         for guide in guides:
@@ -129,24 +129,24 @@ def guide_travels():
 @guides.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = Guide.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
-        return redirect(url_for('login'))
+        return redirect(url_for('guides.login'))
     return render_template('reset_request.html', title='Reset Password', form=form)
 
 
 @guides.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):
     if current_user.is_authenticated:
-        return redirect(url_for('home'))
+        return redirect(url_for('main.home'))
     user = Guide.verify_reset_token(token)
     if user is None:
         flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('reset_request'))
+        return redirect(url_for('guides.reset_request'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -154,7 +154,7 @@ def reset_token(token):
         try:
             user.update()
             flash('Your password has been updated! You are now able to log in', 'success')
-            return redirect(url_for('login'))
+            return redirect(url_for('guides.login'))
         except Exception:
             flash('An error occurred. Guide could not be created.', 'danger')
     return render_template('reset_token.html', title='Reset Password', form=form)

@@ -1,6 +1,5 @@
 from flask import render_template, request, abort, Blueprint
-from travelbook.models import Guide
-
+from travelbook.models import Travel
 
 
 main = Blueprint('main', __name__)

@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, request, redirect, abort, Blu
 from flask_login import login_user, current_user, login_required
 from travelbook import db
 from travelbook.models import Travel
-from travelbook.forms import TravelForm
+from travelbook.travels.forms import TravelForm
 
 
 travels = Blueprint('travels', __name__)
@@ -49,7 +49,7 @@ def edit_travel(travel_id):
         try:
             travel.update()
             flash('Your travel has been updated!', 'success')
-            return redirect(url_for('show_travel', travel_id=travel.id))
+            return redirect(url_for('travels.show_travel', travel_id=travel.id))
         except:
             flash('An error occurred. Trip could not be updated.', 'danger')
     elif request.method == 'GET':
@@ -70,4 +70,4 @@ def delete_travel(travel_id):
         flash('Deleted!', 'success')
     except:
         flash('There was a problem deleting that guide', 'danger')
-    return redirect('/travels')
+    return redirect(url_for('main.travels'))

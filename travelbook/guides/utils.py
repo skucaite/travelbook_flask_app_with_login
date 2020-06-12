@@ -1,9 +1,9 @@
 import os
 import secrets
 from PIL import Image
-from flask import url_for, current_app
+from flask import url_for
 from flask_mail import Message
-from travelbook import mail
+from travelbook import mail, app
 
 
 
@@ -34,7 +34,7 @@ def send_reset_email(user):
                   sender='jurgita.codes@mail.com',
                   recipients=[user.email])
     msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
+{url_for('guides.reset_token', token=token, _external=True)}
 If you did not make this request then simply ignore this email and no changes will be made.
 '''
     mail.send(msg)
