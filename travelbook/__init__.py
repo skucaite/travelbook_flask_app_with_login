@@ -41,7 +41,9 @@ mail = Mail(app)
 from travelbook.guides.routes import guides
 from travelbook.travels.routes import travels
 from travelbook.main.routes import main
+from travelbook.errors.handlers import errors
 
 app.register_blueprint(guides)
 app.register_blueprint(travels)
 app.register_blueprint(main)
+app.register_blueprint(errors)
